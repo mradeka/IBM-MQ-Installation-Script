@@ -1,0 +1,1 @@
+# IBM MQ Installation Script
