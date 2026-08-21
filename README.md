@@ -1,7 +1,7 @@
 # IBM MQ Installation Script
 
 Stand: 2026-07-31 · Script: `install-ibmmq-9.4.sh`
-Getestet mit IBM MQ 9.4.1.0 Developer Edition auf Ubuntu 24.04.
+Getestet mit IBM MQ 9.4.x und 10.0.x Developer Edition auf Ubuntu 24.04.
 
 ---
 
