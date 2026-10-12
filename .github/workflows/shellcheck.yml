@@ -1,0 +1,26 @@
+name: ShellCheck
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: Lint install-ibmmq.sh
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Bash syntax check
+        run: bash -n install-ibmmq.sh
+
+      - name: ShellCheck (severity warning and above)
+        run: |
+          shellcheck --version
+          shellcheck --severity=warning install-ibmmq.sh

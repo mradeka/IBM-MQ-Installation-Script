@@ -1,5 +1,11 @@
 # IBM MQ Installations-Script
 
+[![ShellCheck](https://github.com/mradeka/IBM-MQ-Installation-Script/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/mradeka/IBM-MQ-Installation-Script/actions/workflows/shellcheck.yml)
+[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](LICENSE.md)
+![IBM MQ](https://img.shields.io/badge/IBM%20MQ-9.4.x%20%7C%2010.0.x-052FAD)
+![Platforms](https://img.shields.io/badge/platform-RHEL%20%7C%20SLES%20%7C%20Ubuntu%20%7C%20Debian%20%7C%20Raspberry%20Pi-lightgrey)
+![Shell](https://img.shields.io/badge/shell-bash-4EAA25?logo=gnubash&logoColor=white)
+
 [English](README.md) | **Deutsch**
 
 Interaktives Bash-Script zum Installieren, Absichern und Betreiben von **IBM MQ 9.4.x und 10.0.x**
@@ -42,6 +48,7 @@ Getestet auf Ubuntu 24.04 mit IBM MQ 9.4.1.0 Developer Edition.
 - [Installationsanleitung](docs/INSTALL.de.md) – Schnellstart, erste Verbindung mit MQ Explorer
 - [Vollständige Dokumentation](docs/DOCUMENTATION.de.md) – alle Menüpunkte, Sicherheitskonzept,
   TLS-Workflow, Backup/Restore, Aliase, Automatisierungsvariablen
+- [Changelog](CHANGELOG.md) – Versionshistorie (Englisch)
 
 Oberfläche und Meldungen des Scripts sind auf Englisch; die Dokumentation gibt es auf Englisch
 und Deutsch.

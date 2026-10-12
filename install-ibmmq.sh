@@ -342,6 +342,7 @@ cancel_to_menu() {
 # a SUCCESSFULLY completed action (e.g. backup), after which the
 # main menu should be shown again instead of ending the script - hence no
 # "abort" message, but optionally a neutral note.
+# shellcheck disable=SC2120  # the optional message argument is intentional
 return_to_menu() {
     if [[ "$NON_INTERACTIVE" == "yes" ]]; then
         # In automation mode there is no interactive main menu that
@@ -1946,17 +1947,19 @@ Really remove everything?"
 
     # ---- Remove packages ----
     info "Removing IBM MQ packages ..."
+    local -a pkg_arr=()
+    [[ -n "$pkg_list" ]] && mapfile -t pkg_arr <<< "$pkg_list"
     if [[ "$PKG_FORMAT" == "rpm" ]]; then
         if [[ -n "$pkg_list" ]]; then
             run_with_progress "Removing $(echo "$pkg_list" | wc -l) RPM package(s) ..." \
-                rpm -e $(echo "$pkg_list") \
+                rpm -e "${pkg_arr[@]}" \
                 || warn "Some RPM packages could not be removed - check the logfile."
         fi
     else
         export DEBIAN_FRONTEND=noninteractive
         if [[ -n "$pkg_list" ]]; then
             run_with_progress "Removing $(echo "$pkg_list" | wc -l) DEB package(s) ..." \
-                apt-get -y purge $(echo "$pkg_list") \
+                apt-get -y purge "${pkg_arr[@]}" \
                 || warn "Some DEB packages could not be removed - check the logfile."
             apt-get -y autoremove >>"$LOGFILE" 2>&1 || true
         fi
@@ -2317,7 +2320,7 @@ EOF
             local src_file; src_file="$(ask 'Path to the CA certificate file (root or intermediate certificate, PEM/.cer/.crt)' '')"
             [[ -f "$src_file" ]] || die "File not found: $src_file"
             local trust_label; trust_label="$(ask 'Label for this trust certificate' 'ca-root')"
-            local dst_file="${ssldir}/$(basename "$src_file")"
+            local dst_file; dst_file="${ssldir}/$(basename "$src_file")"
             cp "$src_file" "$dst_file" && chown mqm:mqm "$dst_file" 2>/dev/null \
                 || die "Copying the certificate file to '$ssldir' failed."
             su -s /bin/bash mqm -c "runmqakm -cert -add -db '$kdb_file' -stashed -label '$trust_label' -file '$dst_file' -format ascii" >>"$LOGFILE" 2>&1 \
@@ -2330,7 +2333,7 @@ EOF
             fi
             local src_file; src_file="$(ask 'Path to the certificate file signed by the CA' '')"
             [[ -f "$src_file" ]] || die "File not found: $src_file"
-            local dst_file="${ssldir}/$(basename "$src_file")"
+            local dst_file; dst_file="${ssldir}/$(basename "$src_file")"
             cp "$src_file" "$dst_file" && chown mqm:mqm "$dst_file" 2>/dev/null \
                 || die "Copying the certificate file to '$ssldir' failed."
             su -s /bin/bash mqm -c "runmqakm -cert -receive -db '$kdb_file' -stashed -file '$dst_file'" >>"$LOGFILE" 2>&1 \
@@ -2856,7 +2859,7 @@ tune_os_for_mq() {
     # individually only, IBM minimum: 500 256000 250 1024
     local sem_current sem_min=(500 256000 250 1024) sem_out=()
     sem_current="$(sysctl -n kernel.sem 2>/dev/null)" || sem_current="0 0 0 0"
-    local -a sem_cur_a=($sem_current)
+    local -a sem_cur_a=(); read -r -a sem_cur_a <<< "$sem_current"
     local i
     for i in 0 1 2 3; do
         if [[ "${sem_cur_a[$i]:-0}" =~ ^[0-9]+$ ]] && [[ "${sem_cur_a[$i]:-0}" -ge "${sem_min[$i]}" ]]; then
