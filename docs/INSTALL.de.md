@@ -1,6 +1,9 @@
 # IBM MQ 9.4.x / 10.x – Installationsanleitung (Schnellstart)
 
-Stand: 2026-07-31 · Script: `install-ibmmq-9.4.sh`
+[English](INSTALL.md) | **Deutsch** · Script: `install-ibmmq.sh`
+
+> Oberfläche und Meldungen des Scripts sind auf Englisch. Menüpunkte werden hier daher mit
+> ihrem englischen Namen genannt.
 
 ## 1. Voraussetzungen
 
@@ -17,31 +20,34 @@ Stand: 2026-07-31 · Script: `install-ibmmq-9.4.sh`
 
 ```bash
 # Script ausführbar machen
-chmod +x install-ibmmq-9.4.sh
+chmod +x install-ibmmq.sh
 
 # Interaktiv starten (empfohlen beim ersten Mal)
-sudo ./install-ibmmq-9.4.sh
+sudo ./install-ibmmq.sh
 ```
 
-Das Hauptmenü erscheint. Für eine Neuinstallation: **Punkt 1** wählen und den
-Dialogen folgen. Das Medium wird abgefragt, falls nicht per `--media` angegeben:
+Das Hauptmenü erscheint. Für eine Neuinstallation **Punkt 1** („New installation") wählen und
+den Dialogen folgen. Das Medium wird abgefragt, falls nicht per `--media` angegeben:
 
 ```bash
-sudo ./install-ibmmq-9.4.sh --media /pfad/zu/mqadv_dev941_linux_x86-64.tar.gz
+sudo ./install-ibmmq.sh --media /pfad/zu/mqadv_dev941_linux_x86-64.tar.gz
 ```
+
+Im Text-Modus (kein whiptail oder `--no-tui`) gilt in den Umschalt-Menüs: `c` = weiter
+(continue), `b` = zurück ins Hauptmenü (back).
 
 ## 3. Was die Neuinstallation einrichtet
 
 1. Betriebssystem-Vorbereitung (Pakete, Kernel-Parameter, ulimits – nur anheben, nie absenken)
-2. IBM-MQ-Pakete (Runtime, Server, optional AMS/Web Console/MQTT)
+2. IBM-MQ-Pakete (Runtime, Server, optional AMS/Web Console)
 3. Benutzer/Gruppen: `mqm` (Service), App-Benutzer (Standard `mqapp`, nicht privilegiert),
    Berechtigungsgruppe (Standard `mqappusers`)
 4. Ein oder mehrere Queue Manager mit:
-   - TCP-Listener (Standard-Port 1414, je QM +1)
+   - TCP-Listener (Standard-Port 1414, je weiterem QM +1)
    - CONNAUTH (Passwortpflicht) + CHLAUTH (Kanalregeln) nach IBM Best Practice
    - Anwendungs-Kanal (Standard `APP.SVRCONN`) mit festem MCAUSER
    - **Dediziertem MQ-Explorer-/Admin-Kanal** (Standard `EXPLORER.SVRCONN`)
-   - Optional TLS (Self-Signed als Einstieg, echte CA über die TLS-Verwaltung)
+   - Optional TLS (Self-Signed als Einstieg, echte CA über die SSL/TLS-Verwaltung)
    - Beispiel-Queue (Standard `APP.QUEUE.1`)
 5. Optional: systemd-Autostart, MQ Web Console, Bequemlichkeits-Aliase
 6. Abschluss-Zusammenfassung mit allen MQ-Explorer-Verbindungsparametern
@@ -73,11 +79,16 @@ Alle Werte stehen in der Abschluss-Zusammenfassung und in
 ## 6. Automatisierter Aufruf (ohne Dialoge)
 
 ```bash
-sudo MQ_MODE=install MQ_QMGR_COUNT=1 MQ_QMGR_NAME=QM1 \
-     ./install-ibmmq-9.4.sh --media /pfad/zum/medium --non-interactive
+# Ein Queue Manager
+sudo MQ_MODE=install MQ_QMGR_NAME=QM1 MQ_LISTENER_PORT=1414 \
+     ./install-ibmmq.sh --media /pfad/zum/medium --non-interactive
+
+# Mehrere Queue Manager: NAME[:PORT[:KANAL]], kommagetrennt
+sudo MQ_MODE=install MQ_QMGRS="QM1:1414,QM2:1415" \
+     ./install-ibmmq.sh --media /pfad/zum/medium --non-interactive
 ```
 
-Alle Variablen sind im Script-Kopf dokumentiert (Abschnitt „Standardwerte").
+Alle Variablen sind im Script-Kopf dokumentiert (Abschnitt „Global defaults").
 
 ## 7. Wo finde ich was?
 
@@ -89,4 +100,4 @@ Alle Variablen sind im Script-Kopf dokumentiert (Abschnitt „Standardwerte").
 | Aliase | `/etc/profile.d/mqm-aliases.sh` (nach neuer Anmeldung aktiv) |
 | Backups | `/var/mqm-backups/` (Standard) |
 
-Weitere Details: siehe `DOKUMENTATION.md`.
+Weitere Details: siehe [DOCUMENTATION.de.md](DOCUMENTATION.de.md).
