@@ -10,7 +10,7 @@ First versioned release. The script installs IBM MQ 9.4.x and 10.0.x; the versio
 installed is determined by the supplied installation media.
 
 ### Added
-- Main menu with 12 actions: new installation, additional queue managers, backup, restore,
+- Main menu with 11 actions: new installation, additional queue managers, backup, restore,
   upgrade, add-on features (MQTT/Telemetry, AMS), uninstall, object creation, SSL/TLS
   management, status with start/stop, alias overview
 - Security defaults following IBM best practices: CONNAUTH, CHLAUTH, blocked privileged users,
